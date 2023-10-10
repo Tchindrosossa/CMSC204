@@ -1,0 +1,22 @@
+/**
+ * @author Tchindro Sossa
+ */
+@SuppressWarnings("serial")
+public class InvalidNotationFormatException extends Exception {
+
+    public InvalidNotationFormatException() {
+        super("Invalid notation format.");
+    }
+
+    public InvalidNotationFormatException(String message) {
+        super(message);
+    }
+
+    public InvalidNotationFormatException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidNotationFormatException(Throwable cause) {
+        super(cause);
+    }
+}
