@@ -1,0 +1,117 @@
+/**
+ * @author Tchindro Sossa
+ */
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
+/**
+ * Implementation of a generic queue using a LinkedList.
+ * @param <T> The type of elements stored in the queue.
+ */
+public class MyQueue<T> {
+    private Queue<T> queue; // LinkedList to store queue elements
+    private int maxSize; // Maximum size of the queue
+
+    /**
+     * Constructor for initializing the queue with a maximum size.
+     * @param maxSize The maximum number of elements the queue can hold.
+     * @throws InvalidNotationFormatException If the specified maximum size is invalid.
+     */
+    public MyQueue(int maxSize) throws InvalidNotationFormatException {
+        if (maxSize <= 0) {
+            throw new InvalidNotationFormatException("Invalid notation format");
+        }
+        this.queue = new LinkedList<>();
+        this.maxSize = maxSize;
+    }
+
+    /**
+     * Check if the queue is empty.
+     * @return True if the queue is empty, false otherwise.
+     */
+    public boolean isEmpty() {
+        return queue.isEmpty();
+    }
+
+    /**
+     * Check if the queue is full.
+     * @return True if the queue is full, false otherwise.
+     */
+    public boolean isFull() {
+        return queue.size() == maxSize;
+    }
+
+    /**
+     * Get the current size of the queue.
+     * @return The number of elements in the queue.
+     */
+    public int size() {
+        return queue.size();
+    }
+
+    /**
+     * Enqueue (add) an item to the end of the queue.
+     * @param item The item to enqueue.
+     * @return True if the item was successfully enqueued, false if the queue is full.
+     * @throws QueueOverflowException If the queue is full and cannot enqueue more items.
+     */
+    public boolean enqueue(T item) throws QueueOverflowException {
+        if (isFull()) {
+            throw new QueueOverflowException("Queue is full.");
+        }
+        return queue.offer(item);
+    }
+
+    /**
+     * Dequeue (remove) an item from the front of the queue.
+     * @return The item dequeued from the front of the queue.
+     * @throws QueueUnderflowException If the queue is empty and cannot dequeue more items.
+     */
+    public T dequeue() throws QueueUnderflowException {
+        if (isEmpty()) {
+            throw new QueueUnderflowException("Queue is empty.");
+        }
+        return queue.poll();
+    }
+
+    /**
+     * Fill the queue with items from an ArrayList.
+     * @param list The ArrayList of items to fill the queue with.
+     * @throws QueueOverflowException If the queue becomes full while filling it.
+     */
+    public void fill(ArrayList<T> list) throws QueueOverflowException {
+        for (T item : list) {
+            enqueue(item);
+        }
+    }
+
+    /**
+     * Get a string representation of the queue.
+     * @return A string representation of the queue.
+     */
+    @Override
+    public String toString() {
+        return queue.toString();
+    }
+
+    /**
+     * Get a string representation of the queue with a specified delimiter between elements.
+     * @param delimiter The delimiter to use between elements.
+     * @return A string representation of the queue with elements separated by the delimiter.
+     */
+    public String toString(String delimiter) {
+        StringBuilder result = new StringBuilder();
+        for (T item : queue) {
+            result.append(item.toString());
+            result.append(delimiter);
+        }
+        if (result.length() > 0) {
+            // Remove the trailing delimiter
+            result.setLength(result.length() - delimiter.length());
+        }
+        return result.toString();
+    }
+}
+
