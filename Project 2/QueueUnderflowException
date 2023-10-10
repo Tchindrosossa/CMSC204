@@ -1,0 +1,23 @@
+/**
+ * @author Tchinro Sossa
+ */
+
+@SuppressWarnings("serial")
+public class QueueUnderflowException extends Exception {
+
+    public QueueUnderflowException() {
+        super("Queue underflow - The queue is empty.");
+    }
+
+    public QueueUnderflowException(String message) {
+        super(message);
+    }
+
+    public QueueUnderflowException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public QueueUnderflowException(Throwable cause) {
+        super(cause);
+    }
+}
