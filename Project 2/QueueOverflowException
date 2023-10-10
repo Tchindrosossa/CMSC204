@@ -1,0 +1,23 @@
+/**
+ * @author Tchindro Sossa
+ */
+
+@SuppressWarnings("serial")
+public class QueueOverflowException extends Exception {
+
+    public QueueOverflowException() {
+        super("Queue overflow - The queue is full.");
+    }
+
+    public QueueOverflowException(String message) {
+        super(message);
+    }
+
+    public QueueOverflowException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public QueueOverflowException(Throwable cause) {
+        super(cause);
+    }
+}
