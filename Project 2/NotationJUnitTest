@@ -1,0 +1,64 @@
+/**
+ * @author Tchindro Sossa
+ */
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class NotationJUnitTest {
+
+    @BeforeEach
+    void setUp() {
+        // Initializes any necessary components or resources before each test.
+    }
+
+        @Test
+        void testIsValidInfixExpression() {
+            // Test valid infix expressions
+            assertTrue(Notation.isValidInfixExpression("2 + 3"));
+            assertTrue(Notation.isValidInfixExpression("(4 + 5) * 6 / 2"));
+            assertTrue(Notation.isValidInfixExpression("2 * (3 + 4)"));
+            assertTrue(Notation.isValidInfixExpression("(a + b) * c / (d - e)"));
+            
+            // Test invalid infix expressions
+            assertTrue(Notation.isValidInfixExpression("2 +")); // Incomplete expression
+            assertTrue(Notation.isValidInfixExpression("2 + (3 * 4")); // Unmatched parenthesis
+            assertTrue(Notation.isValidInfixExpression("2 $ 3")); // Invalid character ($)
+            assertTrue(Notation.isValidInfixExpression("2 3")); // Missing operator
+        }
+
+        @Test
+        void testIsValidPostfixExpression() {
+            // Test valid postfix expressions
+            assertTrue(Notation.isValidPostfixExpression("2 3 +"));
+            assertTrue(Notation.isValidPostfixExpression("4 5 + 6 * 2 /"));
+            assertTrue(Notation.isValidPostfixExpression("2 3 4 + *"));
+            assertTrue(Notation.isValidPostfixExpression("a b + c * d e - /"));
+            
+            // Test invalid postfix expressions
+            assertTrue(Notation.isValidPostfixExpression("2 3")); // Incomplete expression
+            assertTrue(Notation.isValidPostfixExpression("2 3 + +")); // Too many operators
+            assertTrue(Notation.isValidPostfixExpression("2 $ 3 +")); // Invalid character ($)
+            assertTrue(Notation.isValidPostfixExpression("2 a +")); // Missing operand
+        }
+    @Test
+    void testEvaluatePostfixExpression() throws InvalidNotationFormatException {
+        // Test the evaluation of postfix expressions.
+
+        // Testing a simple postfix expression: 2 3 +
+        String postfixExpression1 = "2 3 +";
+        int expectedResult1 = 5;
+        assertEquals(expectedResult1, Notation.evaluatePostfixExpression(postfixExpression1));
+
+        // Testing a more complex postfix expression: 4 5 + 6 2 / *
+        String postfixExpression2 = "4 5 + 6 2 / *";
+        int expectedResult2 = 27;
+        assertEquals(expectedResult2, Notation.evaluatePostfixExpression(postfixExpression2));
+
+        // Testing an expression with operator precedence: 2 3 4 + *
+        String postfixExpression3 = "2 3 4 + *";
+        int expectedResult3 = 14;
+        assertEquals(expectedResult3, Notation.evaluatePostfixExpression(postfixExpression3));
+    }
+}
