@@ -1,0 +1,98 @@
+/**
+ * @author Tchindro Sossa
+ */
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Implementation of a generic stack using an ArrayList.
+ * @param <T> The type of elements stored in the stack.
+ */
+public class MyStack<T> implements StackInterface<T> {
+    private final int maxSize; // Maximum size of the stack
+    private final List<T> stack; // ArrayList to store stack elements
+
+    /**
+     * Constructor for initializing the stack with a maximum size.
+     * @param maxSize The maximum number of elements the stack can hold.
+     */
+    public MyStack(int maxSize) {
+        this.maxSize = maxSize;
+        this.stack = new ArrayList<>(maxSize);
+    }
+
+    /**
+     * Default constructor for initializing the stack with an unlimited maximum size.
+     */
+    public MyStack() {
+        this.maxSize = Integer.MAX_VALUE;
+        this.stack = new ArrayList<>();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return stack.isEmpty();
+    }
+
+    @Override
+    public boolean isFull() {
+        return stack.size() == maxSize;
+    }
+
+    @Override
+    public T pop() throws StackUnderflowException {
+        if (isEmpty()) {
+            throw new StackUnderflowException("Stack is empty");
+        }
+        return stack.remove(stack.size() - 1);
+    }
+
+    @Override
+    public T top() throws StackUnderflowException {
+        if (isEmpty()) {
+            throw new StackUnderflowException("Stack is empty");
+        }
+        return stack.get(stack.size() - 1);
+    }
+
+    @Override
+    public int size() {
+        return stack.size();
+    }
+
+    @Override
+    public boolean push(T element) throws StackOverflowException {
+        if (isFull()) {
+            throw new StackOverflowException("Stack is full");
+        }
+        return stack.add(element);
+    }
+
+    @Override
+    public void fill(ArrayList<T> elements) {
+        if (elements.size() + stack.size() > maxSize) {
+            // Handles the stack overflow situation in some way, e.g., clear the stack
+            stack.clear();
+            throw new RuntimeException("Stack will overflow");
+        }
+        stack.addAll(elements);
+    }
+
+    @Override
+    public String toString() {
+        return stack.toString();
+    }
+
+    @Override
+    public String toString(String delimiter) {
+        StringBuilder result = new StringBuilder();
+        for (T element : stack) {
+            result.append(element).append(delimiter);
+        }
+        if (!isEmpty()) {
+            result.delete(result.length() - delimiter.length(), result.length());
+        }
+        return result.toString();
+    }
+}
