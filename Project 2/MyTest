@@ -1,0 +1,68 @@
+/**
+ * @author Tchindro Sossa
+ */
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+
+
+
+public class MyTest {
+	
+	@BeforeEach
+    void setUp() {
+        // Initializes any necessary components or resources before each test.
+    }
+
+    @Test
+    void testNotation() throws InvalidNotationFormatException {
+        // Test cases to test the core Notation logic.
+        // Tests various postfix, infix, and conversion scenarios.
+        
+        // Example test case 1: Test postfix expression evaluation
+        String postfixExpression = "2 3 +";
+        double result = Notation.evaluatePostfixExpression(postfixExpression);
+        assertEquals(5.0, result, 0.001); // Expected result is 5.0
+    }
+
+    @Test
+    void testMyStack() throws StackUnderflowException, StackOverflowException {
+        // Test cases to test the MyStack implementation.
+        // Tests push and pop elements
+        
+        // Example test case 1: Test pushing and popping elements
+        MyStack<Integer> stack = new MyStack<>(5);
+        stack.push(1);
+        stack.push(2);
+        int poppedValue = stack.pop();
+        assertEquals(2, poppedValue); // Expected popped value is 2
+    }
+
+    @Test
+    void testMyQueue() throws InvalidNotationFormatException, QueueOverflowException, QueueUnderflowException {
+        // Test cases to test the MyQueue implementation.
+        // Tests enqueue and dequeue operations.
+        
+        // Example test case 1: Test enqueuing and dequeuing elements
+        MyQueue<String> queue = new MyQueue<>(5);
+        queue.enqueue("A");
+        queue.enqueue("B");
+        String dequeuedValue = queue.dequeue();
+        assertEquals("A", dequeuedValue); // Expected dequeued value is "A"
+    }
+
+    @Test
+    void testInvalidNotationFormatException() {
+        // Test cases to verify the behavior of InvalidNotationFormatException.
+        // Should throwInvalidNotationFormatException when expected and contains the correct messages.
+        
+        // Example test case 1: Test InvalidNotationFormatException message
+        try {
+            throw new InvalidNotationFormatException("Test exception message");
+        } catch (InvalidNotationFormatException e) {
+            assertEquals("Test exception message", e.getMessage()); // Expected exception message
+        }
+    }
+}
