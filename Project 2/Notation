@@ -1,0 +1,179 @@
+/**
+ * @author Tchindro Sossa
+ */
+
+import java.util.Stack;
+import java.util.function.BooleanSupplier;
+
+public class Notation {
+
+    // Define precedence of operators
+    private static int getPrecedence(char operator) {
+        switch (operator) {
+            case '+':
+            case '-':
+                return 1;
+            case '*':
+            case '/':
+                return 2;
+            case '^':
+                return 3;
+            default:
+                return 0; // for parentheses
+        }
+    }
+
+    // Convert infix expression to postfix expression
+    public static String convertInfixToPostfix(String infix) throws InvalidNotationFormatException {
+        Stack<Character> operatorStack = new Stack<>();
+        StringBuilder postfix = new StringBuilder();
+
+        for (char c : infix.toCharArray()) {
+            if (Character.isDigit(c) || Character.isLetter(c)) {
+                postfix.append(c);
+            } else if (c == '(') {
+                operatorStack.push(c);
+            } else if (c == ')') {
+                while (!operatorStack.isEmpty() && operatorStack.peek() != '(') {
+                    postfix.append(operatorStack.pop());
+                }
+                if (!operatorStack.isEmpty() && operatorStack.peek() == '(') {
+                    operatorStack.pop(); // Pop the '('
+                } else {
+                    throw new InvalidNotationFormatException("Invalid infix expression.");
+                }
+            } else {
+                // It's an operator
+                while (!operatorStack.isEmpty() && getPrecedence(c) <= getPrecedence(operatorStack.peek())) {
+                    postfix.append(operatorStack.pop());
+                }
+                operatorStack.push(c);
+            }
+        }
+
+        while (!operatorStack.isEmpty()) {
+            if (operatorStack.peek() == '(') {
+                throw new InvalidNotationFormatException("Invalid infix expression.");
+            }
+            postfix.append(operatorStack.pop());
+        }
+
+        return postfix.toString();
+    }
+
+    // Convert postfix expression to infix expression
+    public static String convertPostfixToInfix(String postfix) throws InvalidNotationFormatException {
+        Stack<String> operandStack = new Stack<>();
+        String[] tokens = postfix.split("");
+
+        for (String token : tokens) {
+            if (isOperand(token)) {
+                operandStack.push(token);
+            } else if (isOperator(token)) {
+                if (operandStack.size() < 2) {
+                    throw new InvalidNotationFormatException("Invalid postfix expression.");
+                }
+                String operand2 = operandStack.pop();
+                String operand1 = operandStack.pop();
+                String result = "(" + operand1 + token + operand2 + ")";
+                operandStack.push(result);
+            }
+        }
+
+        if (operandStack.size() != 1) {
+            throw new InvalidNotationFormatException("Invalid postfix expression.");
+        }
+
+        return operandStack.pop();
+    }
+
+    // Check if a token is an operand (number or variable)
+    private static boolean isOperand(String token) {
+        return token.matches("[A-Za-z0-9]+");
+    }
+
+    // Check if a token is an operator
+    private static boolean isOperator(String token) {
+        return token.matches("[+\\-*/^]");
+    }
+
+    // Evaluate a postfix expression
+    public static double evaluatePostfixExpression(String postfix) throws InvalidNotationFormatException {
+        Stack<Double> operandStack = new Stack<>();
+        String[] tokens = postfix.split("");
+
+        for (String token : tokens) {
+            if (isOperand(token)) {
+                operandStack.push(Double.parseDouble(token));
+            } else if (isOperator(token)) {
+                if (operandStack.size() < 2) {
+                    throw new InvalidNotationFormatException("Invalid postfix expression.");
+                }
+                double operand2 = operandStack.pop();
+                double operand1 = operandStack.pop();
+                double result = performOperation(operand1, operand2, token);
+                operandStack.push(result);
+            }
+        }
+
+        if (operandStack.size() != 1) {
+            throw new InvalidNotationFormatException("Invalid postfix expression.");
+        }
+
+        return operandStack.pop();
+    }
+
+    // Perform an arithmetic operation
+    private static double performOperation(double operand1, double operand2, String operator) {
+        switch (operator) {
+            case "+":
+                return operand1 + operand2;
+            case "-":
+                return operand1 - operand2;
+            case "*":
+                return operand1 * operand2;
+            case "/":
+                if (operand2 == 0) {
+                    throw new ArithmeticException("Division by zero.");
+                }
+                return operand1 / operand2;
+            case "^":
+                return Math.pow(operand1, operand2);
+            default:
+                throw new IllegalArgumentException("Invalid operator: " + operator);
+        }
+    }
+
+
+    public static BooleanSupplier isValidInfixExpression(String infixExpression) {
+        return () -> {
+            try {
+                return isValidInfixExpressionInternal(infixExpression) != null;
+            } catch (InvalidNotationFormatException e) {
+                return false;
+            }
+        };
+    }
+
+    public static BooleanSupplier isValidPostfixExpression(String postfixExpression) {
+        return () -> {
+            try {
+                return isValidPostfixExpressionInternal(postfixExpression);
+            } catch (InvalidNotationFormatException e) {
+                return false;
+            }
+        };
+    }
+
+    private static BooleanSupplier isValidInfixExpressionInternal(String expression) throws InvalidNotationFormatException {
+        // Implements the logic to validate infix expressions
+        // Use the existing isValidInfixExpression method here
+        return isValidInfixExpression(expression);
+    }
+
+    private static boolean isValidPostfixExpressionInternal(String expression) throws InvalidNotationFormatException {
+        // Implements the logic to validate postfix expressions
+        // Use the existing isValidPostfixExpression method here
+        return isValidPostfixExpression(expression) != null;
+    }
+}
