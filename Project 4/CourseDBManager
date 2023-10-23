@@ -1,0 +1,128 @@
+package Course_Database;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import javafx.scene.control.Alert;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class CourseDBManager implements CourseDBManagerInterface {
+    private CourseDBStructure courseDBStructure;
+
+    public CourseDBManager() {
+        this.courseDBStructure = new CourseDBStructure(100);  // initial size
+    }
+
+    @Override
+    public void add(String id, int crn, int credits, String roomNum, String instructor) {
+        if (id.equals("null") || roomNum.equals("null") || instructor.equals("null") || crn == 0 || credits == 0) {
+            showAlert("Invalid Entry", "Entry contains default/null values.");
+            return;
+        }
+        try {
+            CourseDBElement element = new CourseDBElement(id, crn, credits, roomNum, instructor);
+            courseDBStructure.add(element);
+        } catch (IllegalArgumentException e) {
+            showAlert("Invalid Course Details", e.getMessage());
+        }
+    }
+        
+    @Override
+    public CourseDBElement get(int crn) {
+    	// Before fetching the CourseDBElement, validate the CRN
+    	if(!isValidCRN(crn)) {
+    		showAlert("Invalid Input", "Please enter a valid CRN");
+    		return null; // Return null or throw an exception as appropriate 
+    	}
+        return courseDBStructure.get(crn);
+    }
+
+    @Override
+    public void readFile(File inputFile) throws FileNotFoundException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+            String line;
+            // Pattern updated to match the given data format
+            Pattern pattern = Pattern.compile("(\\w+)\\s+(\\d+)\\s+(\\d+)\\s+([\\w-]+)\\s+(.+)");
+            // Explanation of the pattern:
+            // (\\w+) - matches one or more word characters (for courseId)
+            // \\s+ - matches one or more whitespace characters
+            // (\\d+) - matches one or more digit characters (for crn and credits)
+            // (\\w+) - matches one or more word characters (for roomNumber)
+            // (.+) - matches one or more of any character (for instructorName)
+
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.matches()) {
+                    String courseId = matcher.group(1);
+                    int crn = Integer.parseInt(matcher.group(2));
+                    int credits = Integer.parseInt(matcher.group(3));
+                    String roomNumber = matcher.group(4);
+                    String instructor = matcher.group(5).trim(); // trim to remove any trailing spaces
+
+                    this.add(courseId, crn, credits, roomNumber, instructor);
+                } else {
+                    showAlert("Invalid Data", "The provided line doesn't have valid data: " + line);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            showAlert("File Not Found", "The specified file was not found: " + inputFile.getName());
+            throw e; // rethrowing the exception to be handled by the calling method if needed
+        } catch (IOException e) {
+            showAlert("File Read Error", "An error occurred while reading the file: " + inputFile.getName());
+        }
+    }
+
+    
+    @Override
+    public ArrayList<String> showAll() {
+    	ArrayList<String> entries = courseDBStructure.showAll();
+    	ArrayList<String> validEntries = new ArrayList<>();
+    	for (String entry : entries) {
+    		if (!entry.contains("null") && !entry.contains("crn=0") && !entry.contains("credit=0")) {
+    			validEntries.add(entry);
+    		}
+    	}
+    	return validEntries;
+    }
+
+    // Helper method to show alerts for the user
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    
+    // Method to validate the CRN
+    private boolean isValidCRN(int crn) {
+        String crnString = String.valueOf(crn);
+        return crn > 0 && crnString.length() == 5;
+    }
+    
+    /**
+     * This method fetches the details of a course based on its CRN and converts it to a user-readable format.
+     * @param crn CRN of the course.
+     * @return A string representation of the course details.
+     */
+    public String getCourseDetails(int crn) {
+        CourseDBElement element = courseDBStructure.get(crn);
+        
+        if (element == null) {
+            System.out.println("Course with CRN " + crn + " not found.");
+            return "Course not found for CRN: " + crn; // Return a meaningful message indicating the course was not found
+        } else {
+            System.out.println(element.toString());
+            return String.format("Course ID: %s\nCRN: %d\nCredits: %d\nRoom Number: %s\nInstructor: %s",
+                    element.getCourseId(), element.getCRN(), element.getCredits(),
+                    element.getRoomNumber(), element.getInstructorName());
+        }
+    }
+}
