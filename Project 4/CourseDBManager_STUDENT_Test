@@ -1,0 +1,66 @@
+package Course_Database;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class CourseDBManager_STUDENT_Test {
+
+    private CourseDBManager manager;
+    private CourseDBElement element;
+
+    @Before
+    public void setUp() {
+        manager = new CourseDBManager();
+        element = new CourseDBElement("CS101", 12345, 3, "R101", "Dr. Smith");
+    }
+
+    @Test
+    public void testAddAndGet() {
+        manager.add("CS101", 12345, 3, "R101", "Dr. Smith");
+        CourseDBElement fetchedElement = manager.get(12345);
+        assertEquals(element.toString(), fetchedElement.toString());
+    }
+    
+    @Test
+    public void testDuplicateAdd() {
+        manager.add("CS101", 12345, 3, "R101", "Dr. Smith");
+        manager.add("CS101", 12345, 3, "R101", "Dr. Smith");
+        ArrayList<String> courses = manager.showAll();
+        assertEquals(1, courses.size()); 
+    }
+    
+    @Test
+    public void testMultipleAddAndShowAll() {
+        manager.add("CS101", 12345, 3, "R101", "Dr. Smith");
+        manager.add("CS102", 67890, 4, "R202", "Dr. Jane");
+        manager.add("CS103", 54321, 3, "R103", "Dr. Doe");
+        
+        ArrayList<String> courses = manager.showAll();
+        assertEquals(3, courses.size());
+    }
+    
+    @Test
+    public void testInvalidCourseRetrieval() {
+        assertNull(manager.get(99999)); 
+    }
+
+
+    @Test
+    public void testShowAll() {
+        manager.add("CS101", 12345, 3, "R101", "Dr. Smith");
+        manager.add("CS102", 67890, 4, "R202", "Dr. Jane");
+        
+        ArrayList<String> courses = manager.showAll();
+
+        assertTrue(courses.contains(element.toString()));
+        assertTrue(courses.contains(new CourseDBElement("CS102", 67890, 4, "R202", "Dr. Jane").toString()));
+    }
+}
