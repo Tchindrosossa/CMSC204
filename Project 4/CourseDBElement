@@ -1,0 +1,143 @@
+package Course_Database;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+public class CourseDBElement implements Comparable<CourseDBElement> {
+    
+	// Attributes
+    private String courseId;
+    private int crn;
+    private int credits;
+    private String roomNumber;
+    private String instructorName;
+    
+    // No-argument constructor
+    public CourseDBElement() {
+        this.courseId = "";
+        this.crn = 0;
+        this.credits = 0;
+        this.roomNumber = "";
+        this.instructorName = "";
+    }
+      
+    // Constructor
+    public CourseDBElement(String courseId, int crn, int credits, String roomNumber, String instructorName) {
+        if (!isValidCRN(crn) || !isValidCredits(credits) || courseId == null || roomNumber == null || instructorName == null) {
+            System.out.println("Invalid course details: " 
+                    + courseId + " " 
+                    + crn + " " 
+                    + credits + " " 
+                    + roomNumber + " " 
+                    + instructorName);
+            return;
+        }
+        this.courseId = courseId;
+        this.crn = crn;
+        this.credits = credits;
+        this.roomNumber = roomNumber;
+        this.instructorName = instructorName;
+    }
+    
+    // Getter methods
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public int getCRN() {
+        return crn;
+    }
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public String getInstructorName() {
+        return instructorName;
+    }
+    
+    // Setter methods
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public void setCRN(int crn) {
+        if (isValidCRN(crn)) {
+            this.crn = crn;
+        } else {
+            System.out.println("Invalid CRN: " + crn);
+        }
+    }
+
+    public void setCredits(int credits) {
+        if (isValidCredits(credits)) {
+            this.credits = credits;
+        } else {
+            System.out.println("Invalid credits: " + credits);
+        }
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public void setInstructorName(String instructorName) {
+        this.instructorName = instructorName;
+    }
+
+ // Validation methods
+    private boolean isValidCRN(int crn) {
+        String crnString = String.valueOf(crn);
+        return crn > 0 && crnString.length() == 5;
+    }
+
+    private boolean isValidCredits(int credits) {
+        return credits >= 1 && credits <= 4;
+    }
+    
+    // Overridden compareTo method
+    @Override
+    public int compareTo(CourseDBElement cde) {
+        return Integer.compare(this.crn, cde.crn);
+    }
+    
+    // Overridden hashCode method
+    @Override
+    public int hashCode() {
+        return Integer.toString(crn).hashCode();
+    }
+    
+    // Overridden equals method
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CourseDBElement other = (CourseDBElement) obj;
+        return crn == other.crn;
+    }
+
+    // toString method for better representation
+    @Override
+    public String toString() {
+        return "\nCourse:" + courseId +
+               " CRN:" + crn +
+               " Credits:" + credits +
+               " Instructor:" + instructorName +
+               " Room:" + roomNumber;
+    }
+
+
+    public String getID() {
+        return courseId;
+    }
+
+    public String getRoomNum() {
+        return roomNumber;
+    }
+
+}
