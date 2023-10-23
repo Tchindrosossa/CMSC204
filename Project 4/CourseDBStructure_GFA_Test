@@ -1,0 +1,97 @@
+package Course_Database;
+
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * This is the test file for the CourseDBManager which is implemented from the
+ * CourseDBManagerInterface
+ * 
+ */
+public class CourseDBStructure_GFA_Test {
+	CourseDBStructure cds, testStructure;
+
+	@Before
+	public void setUp() throws Exception {
+		cds = new CourseDBStructure(20);
+		testStructure = new CourseDBStructure("Testing", 20);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		cds = testStructure = null;
+	}
+
+	/**
+	 * Test the tableSize for CourseDBStructures constructed with both constructors
+	 */
+	@Test
+	public void testGetTableSize() {
+		assertEquals(19, cds.getTableSize());
+		assertEquals(20, testStructure.getTableSize());
+	}
+
+	@Test
+	public void testHashTable() {
+	    //Create a course 
+	    CourseDBElement cde1 = new CourseDBElement("CMSC500", 39999, 4, "SC100", "Nobody InParticular");
+	    cds.add(cde1);  //add to data structure
+	    cds.add(cde1);  // add it again. add method should ignore it
+
+	    ArrayList<String> courseList = cds.showAll(); 
+	    assertTrue(courseList.size() == 1);  
+
+	    //Create another course
+	    CourseDBElement cde2 = new CourseDBElement("CMSC600", 4000, 4, "SC100", "Nobody InParticular");
+
+	    CourseDBElement retrievedCDE1 = cds.get(cde1.getCRN());
+	    if (retrievedCDE1 != null) {
+	        assertEquals(39999, retrievedCDE1.getCRN());  
+	    } else {
+	        fail("Expected to retrieve CourseDBElement with CRN: " + cde1.getCRN() + " but got null.");
+	    }
+
+	    CourseDBElement retrievedCDE2 = cds.get(cde2.getCRN());
+	    if (retrievedCDE2 == null) {
+	        // Since cde2 hasn't been added to cds yet, this is the expected behavior.
+	        cds.add(cde2);
+	    } else {
+	        fail("Unexpectedly retrieved CourseDBElement with CRN: " + cde2.getCRN());
+	    }
+
+	    courseList = cds.showAll(); 
+	    assertTrue(courseList.size() == 2);  
+
+	    retrievedCDE2 = cds.get(cde2.getCRN());
+	    if (retrievedCDE2 != null) {
+	        assertEquals(0, retrievedCDE2.getCRN());  
+	    } else {
+	        fail("Expected to retrieve CourseDBElement with CRN: " + cde2.getCRN() + " but got null.");
+	    }
+
+	    CourseDBElement cde1Update = new CourseDBElement("CMSC500-updated", 39999, 4, "SC100", "updated");
+	    cds.add(cde1Update);  //Same CRN updated information
+
+	    courseList = cds.showAll(); 
+	    assertTrue(courseList.size() == 2);  
+
+	    CourseDBElement retrievedCDE1Updated = cds.get(cde1Update.getCRN());
+	    if (retrievedCDE1Updated != null) {
+	        assertEquals(39999, retrievedCDE1Updated.getCRN());
+	        assertEquals("CMSC500", retrievedCDE1Updated.getID());  
+	    } else {
+	        fail("Expected to retrieve updated CourseDBElement with CRN: " + cde1Update.getCRN() + " but got null.");
+	    }
+
+	    testStructure.add(cde1); 
+	    courseList = testStructure.showAll(); 
+	    assertTrue(courseList.size() == 1); 
+	}
+}
+
