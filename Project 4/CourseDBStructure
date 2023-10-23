@@ -1,0 +1,108 @@
+package Course_Database;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CourseDBStructure implements CourseDBStructureInterface {
+    private static final float LOAD_FACTOR = 1.5f;
+
+    private List<LinkedList<CourseDBElement>> hashTable;
+
+    public CourseDBStructure(int estimatedNumCourses) {
+        int tableSize = findNext4K3Prime((int) (estimatedNumCourses / LOAD_FACTOR));
+        hashTable = new ArrayList<>(tableSize);
+        for (int i = 0; i < tableSize; i++) {
+            hashTable.add(null);
+        }
+    }
+
+    public CourseDBStructure(String testing, int testSize) {
+        hashTable = new ArrayList<>(testSize);
+        for (int i = 0; i < testSize; i++) {
+            hashTable.add(null);
+        }
+    }
+
+    @Override
+    public ArrayList<String> showAll() {
+        ArrayList<String> allElementsAsString = new ArrayList<>();
+        
+        for (LinkedList<CourseDBElement> bucket : hashTable) {
+            if (bucket != null) {
+                for (CourseDBElement element : bucket) {
+                    allElementsAsString.add(element.toString());
+                }
+            }
+        }
+        
+        return allElementsAsString;
+    }
+    
+    @Override
+    public void add(CourseDBElement element) {
+        int index = getHashIndex(element.getCRN());
+
+        if (hashTable.get(index) == null) {
+            hashTable.set(index, new LinkedList<>());
+        }
+
+        if (!hashTable.get(index).contains(element)) {
+            hashTable.get(index).add(element);
+        }
+    }
+
+    @Override
+    public CourseDBElement get(int crn) {
+        int index = getHashIndex(crn);
+        if (hashTable.get(index) != null) {
+            for (CourseDBElement element : hashTable.get(index)) {
+                if (element.getCRN() == crn) {
+                    return element;
+                }
+            }
+        }
+        
+        System.err.println("CRNNotFoundException: The given CRN " + crn + " was not found in the database");
+        return null;
+    }
+
+    @Override
+    public int getTableSize() {
+        return hashTable.size();
+    }
+
+    private int getHashIndex(int crn) {
+        return Integer.toString(crn).hashCode() % hashTable.size();
+    }
+
+    private int findNext4K3Prime(int startValue) {
+        int k = startValue / 4;
+
+        while (true) {
+            int potentialPrime = 4 * k + 3;
+            if (isPrime(potentialPrime) && potentialPrime > startValue) {
+                return potentialPrime;
+            }
+            k++;
+        }
+    }
+
+    private boolean isPrime(int num) {
+        if (num <= 1) return false;
+        if (num <= 3) return true;
+
+        if (num % 2 == 0 || num % 3 == 0) return false;
+
+        int i = 5;
+        while (i * i <= num) {
+            if (num % i == 0 || num % (i + 2) == 0) return false;
+            i += 6;
+        }
+        return true;
+    }
+}
