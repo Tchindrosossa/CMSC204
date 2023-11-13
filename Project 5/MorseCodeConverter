@@ -1,0 +1,114 @@
+package Converter_Utility;
+
+/***
+ * @author Tchindro Sossa
+ */
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class MorseCodeConverter {
+    private static MorseCodeTree morseCodeTree = new MorseCodeTree();
+
+    /**
+     * Validates the given Morse code string and checks for standard Morse code characters
+     * and sequences. Non-standard sequences like multiple dashes without spacesare considered invalid.
+     * @param code The Morse code to validate.
+     * @return An error message if the code is invalid, otherwise null.
+     */
+    public static String validateMorseCode(String code) {
+        // Check if the code is null or empty
+        if (code == null || code.trim().isEmpty()) {
+            return "The Morse code is empty.";
+        }
+        
+        // Check for any invalid character that is not dot, dash, space, or slash
+        if (!code.matches("[\\.\\- \\/]+")) {
+            return "The Morse code contains invalid characters.";
+        }
+        
+        // Split the code by slashes to separate Morse code words
+        String[] morseWords = code.trim().split(" / ");
+        for (String word : morseWords) {
+            // Split the word by spaces to separate Morse code characters
+            String[] morseCharacters = word.split(" ");
+            for (String morseChar : morseCharacters) {
+                // Check if each character is a valid Morse code
+                if (!morseChar.matches("[\\.\\-]+")) {
+                    return "Invalid Morse code sequence: " + morseChar;
+                }
+            }
+        }
+        
+        return null; // Return null if no issues are found
+    }
+    
+    /**
+     * Converts Morse code into English from a given String.
+     *
+     * @param code The string containing Morse code
+     * @return The English translation
+     */
+    public static String convertToEnglish(String code) throws IllegalArgumentException {
+        if (code == null || code.trim().isEmpty()) {
+            throw new IllegalArgumentException("The Morse code is empty.");
+        }
+
+        // Trim the code and remove any trailing slashes before splitting
+        String trimmedCode = code.trim();
+        if (trimmedCode.endsWith("/")) {
+            trimmedCode = trimmedCode.substring(0, trimmedCode.length() - 1).trim();
+        }
+
+        String[] words = trimmedCode.split(" / ");
+        StringBuilder english = new StringBuilder();
+
+        for (String word : words) {
+            String[] letters = word.split(" ");
+            for (String letterCode : letters) {
+                if (!letterCode.isEmpty()) {
+                    String letter = morseCodeTree.fetch(letterCode);
+                    if (letter == null) {
+                        throw new IllegalArgumentException("Invalid Morse code sequence: " + letterCode);
+                    }
+                    english.append(letter);
+                }
+            }
+            english.append(" "); // Append a space after each word
+        }
+
+        return english.toString().trim(); // Remove the trailing space
+    }
+
+    /**
+     * Converts Morse code into English from a given file.
+     *
+     * @param codeFile The file containing Morse code
+     * @return The English translation
+     * @throws FileNotFoundException If the file cannot be found
+     */
+    public static String convertToEnglish(File codeFile) throws FileNotFoundException {
+        Scanner fileScanner = new Scanner(codeFile);
+        StringBuilder code = new StringBuilder();
+
+        while (fileScanner.hasNextLine()) {
+            code.append(fileScanner.nextLine()).append(" / "); // Add " / " to separate lines/words
+        }
+        fileScanner.close();
+
+        return convertToEnglish(code.toString().trim());
+    }
+
+    /**
+     * Prints the contents of the Morse code tree. Used for testing.
+     *
+     * @return A string representation of the tree
+     */
+    public static String printTree() {
+        ArrayList<String> treeList = morseCodeTree.toArrayList();
+        return String.join(" ", treeList);
+    }
+}
+
