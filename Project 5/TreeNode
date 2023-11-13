@@ -1,0 +1,49 @@
+package Converter_Utility;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+public class TreeNode<T> {
+    private T data; // The data element stored in the node
+    private TreeNode<T> leftChild; // Reference to the left child
+    private TreeNode<T> rightChild; // Reference to the right child
+
+    // Constructor to create a new TreeNode with data
+    public TreeNode(T data) {
+        this.data = data;
+        this.leftChild = null;
+        this.rightChild = null;
+    }
+
+    // Getter for the data
+    public T getData() {
+        return data;
+    }
+
+    // Setter for the data
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    // Getter for the left child
+    public TreeNode<T> getLeftChild() {
+        return leftChild;
+    }
+
+    // Setter for the left child
+    public void setLeftChild(TreeNode<T> child) {
+        this.leftChild = child;
+    }
+
+    // Getter for the right child
+    public TreeNode<T> getRightChild() {
+        return rightChild;
+    }
+
+    // Setter for the right child
+    public void setRightChild(TreeNode<T> child) {
+        this.rightChild = child;
+    }
+}
+
