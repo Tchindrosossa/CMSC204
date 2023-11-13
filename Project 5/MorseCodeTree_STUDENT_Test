@@ -1,0 +1,62 @@
+package Converter_Utility;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class MorseCodeTree_STUDENT_Test {
+
+    private MorseCodeTree morseCodeTree;
+
+    @Before
+    public void setUp() {
+        morseCodeTree = new MorseCodeTree();
+    }
+
+    @Test
+    public void testInsertAndFetch() {
+        morseCodeTree.insert(".", "e");
+        morseCodeTree.insert("-", "t");
+        assertEquals("e", morseCodeTree.fetch("."));
+        assertEquals("t", morseCodeTree.fetch("-"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFetchInvalidCode() {
+        morseCodeTree.fetch("..-..");
+    }
+
+    @Test
+    public void testTreeStructure() {
+        morseCodeTree.buildTree();
+        String expectedStructure = "h s v i f u e l r a p w j  b d x n c k y t z g q m o";
+        assertEquals(expectedStructure, MorseCodeConverter.printTree());
+    }
+
+    @Test
+    public void testToArrayList() {
+        morseCodeTree.buildTree();
+        ArrayList<String> treeList = morseCodeTree.toArrayList();
+        assertTrue(treeList.contains("e"));
+        assertTrue(treeList.contains("t"));
+        // Additional assertions can be added for other characters
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testDeleteUnsupported() {
+        morseCodeTree.delete("e");
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testUpdateUnsupported() {
+        morseCodeTree.update();
+    }
+
+}
