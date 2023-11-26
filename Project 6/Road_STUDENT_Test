@@ -1,0 +1,80 @@
+package My_Project_6;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import org.junit.*;
+import static org.junit.Assert.*;
+
+public class Road_STUDENT_Test {
+    private Road road;
+    private Town town1;
+    private Town town2;
+
+    @Before
+    public void setUp() throws Exception {
+        town1 = new Town("Town1");
+        town2 = new Town("Town2");
+        road = new Road(town1, town2, 1, "Road1");
+    }
+
+    @Test
+    public void testGetName() {
+        assertEquals("Road1", road.getName());
+    }
+
+    @Test
+    public void testGetWeight() {
+        assertEquals(1, road.getWeight());
+    }
+
+    @Test
+    public void testGetTown1() {
+        assertEquals(town1, road.getTown1());
+    }
+
+    @Test
+    public void testGetTown2() {
+        assertEquals(town2, road.getTown2());
+    }
+
+    @Test
+    public void testSetDistance() {
+        road.setDistance(2);
+        assertEquals(2, road.getDistance());
+    }
+
+    @Test
+    public void testSetName() {
+        road.setName("Road2");
+        assertEquals("Road2", road.getName());
+    }
+
+    @Test
+    public void testCompareTo() {
+        Road otherRoad = new Road(town1, town2, 1, "Road2");
+        assertTrue(road.compareTo(otherRoad) < 0);
+    }
+
+    @Test
+    public void testEquals() {
+        Road sameRoad = new Road(town1, town2, 1, "Road1");
+        Road differentRoad = new Road(town1, new Town("Town3"), 1, "Road1");
+
+        assertTrue(road.equals(sameRoad));
+        assertFalse(road.equals(differentRoad));
+    }
+
+    @Test
+    public void testHashCode() {
+        Road sameRoad = new Road(town1, town2, 1, "Road1");
+        assertEquals(road.hashCode(), sameRoad.hashCode());
+    }
+
+    @Test
+    public void testToString() {
+        String expected = "Road{name='Road1', between Town1 and Town2, distance=1}";
+        assertEquals(expected, road.toString());
+    }
+}
