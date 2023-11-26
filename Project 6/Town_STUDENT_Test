@@ -1,0 +1,80 @@
+package My_Project_6;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import org.junit.*;
+import static org.junit.Assert.*;
+import java.util.List;
+
+public class Town_STUDENT_Test {
+    private Town town;
+    private Town adjacentTown;
+
+    @Before
+    public void setUp() throws Exception {
+        town = new Town("Town1");
+        adjacentTown = new Town("Town2");
+    }
+
+    @Test
+    public void testGetName() {
+        assertEquals("Town1", town.getName());
+    }
+
+    @Test
+    public void testSetName() {
+        town.setName("NewTown1");
+        assertEquals("NewTown1", town.getName());
+    }
+
+    @Test
+    public void testAddAdjacentTown() {
+        town.addAdjacentTown(adjacentTown);
+        assertTrue(town.getAdjacentTowns().contains(adjacentTown));
+    }
+
+    @Test
+    public void testRemoveAdjacentTown() {
+        town.addAdjacentTown(adjacentTown);
+        assertTrue(town.removeAdjacentTown(adjacentTown));
+        assertFalse(town.getAdjacentTowns().contains(adjacentTown));
+    }
+
+    @Test
+    public void testGetAdjacentTowns() {
+        town.addAdjacentTown(adjacentTown);
+        List<Town> adjacentTowns = town.getAdjacentTowns();
+        assertNotNull(adjacentTowns);
+        assertEquals(1, adjacentTowns.size());
+        assertTrue(adjacentTowns.contains(adjacentTown));
+    }
+
+    @Test
+    public void testCompareTo() {
+        Town anotherTown = new Town("Town3");
+        assertTrue(town.compareTo(anotherTown) < 0);
+        assertTrue(anotherTown.compareTo(town) > 0);
+    }
+
+    @Test
+    public void testEquals() {
+        Town sameTown = new Town("Town1");
+        Town differentTown = new Town("Town3");
+        assertTrue(town.equals(sameTown));
+        assertFalse(town.equals(differentTown));
+    }
+
+    @Test
+    public void testHashCode() {
+        Town sameTown = new Town("Town1");
+        assertEquals(town.hashCode(), sameTown.hashCode());
+    }
+
+    @Test
+    public void testToString() {
+        String expected = "Town{name='Town1', adjacentTowns=[]}";
+        assertEquals(expected, town.toString());
+    }
+}
