@@ -1,0 +1,111 @@
+package My_Project_6;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import org.junit.*;
+import static org.junit.Assert.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class TownGraphManager_STUDENT_Test {
+    private TownGraphManager townGraphManager;
+
+    @Before
+    public void setUp() throws Exception {
+        townGraphManager = new TownGraphManager();
+        townGraphManager.addTown("Town1");
+        townGraphManager.addTown("Town2");
+        townGraphManager.addRoad("Town1", "Town2", 2, "Road1");
+        townGraphManager.addTown("Town3");
+    }
+
+    @Test
+    public void testAddRoad() {
+        assertTrue(townGraphManager.addRoad("Town2", "Town3", 3, "Road2"));
+        assertEquals("Road2", townGraphManager.getRoad("Town2", "Town3"));
+    }
+
+    @Test
+    public void testGetRoad() {
+        assertEquals("Road1", townGraphManager.getRoad("Town1", "Town2"));
+        assertNull(townGraphManager.getRoad("Town1", "Town3"));
+    }
+
+    @Test
+    public void testAddTown() {
+        assertTrue(townGraphManager.addTown("Town4"));
+        assertFalse(townGraphManager.addTown("Town2")); // Already exists
+    }
+
+    @Test
+    public void testGetTown() {
+        assertNotNull(townGraphManager.getTown("Town1"));
+        assertNull(townGraphManager.getTown("Town5")); // Does not exist
+    }
+
+    @Test
+    public void testContainsTown() {
+        assertTrue(townGraphManager.containsTown("Town1"));
+        assertFalse(townGraphManager.containsTown("Town5"));
+    }
+
+    @Test
+    public void testContainsRoadConnection() {
+        assertTrue(townGraphManager.containsRoadConnection("Town1", "Town2"));
+        assertFalse(townGraphManager.containsRoadConnection("Town1", "Town3"));
+    }
+
+    @Test
+    public void testAllRoads() {
+        ArrayList<String> roads = townGraphManager.allRoads();
+        assertTrue(roads.contains("Road1"));
+        assertEquals(1, roads.size());
+    }
+
+    @Test
+    public void testDeleteRoadConnection() {
+        townGraphManager.addRoad("Town1", "Town2", 2, "Road1");
+        assertTrue(townGraphManager.containsRoadConnection("Town1", "Town2"));
+        assertTrue(townGraphManager.deleteRoadConnection("Town1", "Town2", "Road1"));
+        assertTrue(townGraphManager.containsRoadConnection("Town1", "Town2"));
+    }
+
+    @Test
+    public void testDeleteTown() {
+        assertTrue(townGraphManager.deleteTown("Town2"));
+        assertFalse(townGraphManager.containsTown("Town2"));
+    }
+
+    @Test
+    public void testAllTowns() {
+        ArrayList<String> towns = townGraphManager.allTowns();
+        assertTrue(towns.contains("Town1"));
+        assertTrue(towns.contains("Town3"));
+    }
+
+    @Test
+    public void testGetPath() {
+        ArrayList<String> path = townGraphManager.getPath("Town1", "Town2");
+        assertNotNull(path);
+        
+    }
+
+    @Test
+    public void testPopulateTownGraph() throws IOException {
+        File inputFile = new File("Towns.txt");
+        townGraphManager.populateTownGraph(inputFile);
+        assertTrue(townGraphManager.containsTown("Town1"));
+        assertTrue(townGraphManager.containsRoadConnection("Town1", "Town2"));
+    }
+    
+    @Test
+    public void testPopulateTownGraphWithNewFile() throws IOException {
+        File inputFile = new File("towns and Roads.txt");
+        townGraphManager.populateTownGraph(inputFile);
+        assertTrue(townGraphManager.containsTown("Town1"));
+        assertTrue(townGraphManager.containsRoadConnection("Town1", "Town2"));
+    }
+}
