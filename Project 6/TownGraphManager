@@ -1,0 +1,130 @@
+package My_Project_6;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import java.io.*;
+import java.util.*;
+
+public class TownGraphManager implements TownGraphManagerInterface {
+    private Graph graph;
+
+    public TownGraphManager() {
+        graph = new Graph();
+    }
+
+    @Override
+    public boolean addRoad(String town1, String town2, int weight, String roadName) {
+        Town t1 = new Town(town1);
+        Town t2 = new Town(town2);
+        if (!graph.containsVertex(t1)) graph.addVertex(t1);
+        if (!graph.containsVertex(t2)) graph.addVertex(t2);
+        Road newRoad = graph.addEdge(t1, t2, weight, roadName);
+        return newRoad != null;
+    }
+
+    @Override
+    public String getRoad(String town1, String town2) {
+        Town t1 = new Town(town1);
+        Town t2 = new Town(town2);
+        Road road = graph.getEdge(t1, t2);
+        return road == null ? null : road.getName();
+    }
+
+    @Override
+    public boolean addTown(String v) {
+        return graph.addVertex(new Town(v));
+    }
+
+    @Override
+    public Town getTown(String name) {
+        Town queryTown = new Town(name);
+        for (Town town : graph.vertexSet()) {
+            if (town.equals(queryTown)) {
+                return town;
+            }
+        }
+        return null; // Return null if town not found
+    }
+
+    @Override
+    public boolean containsTown(String v) {
+        return graph.containsVertex(new Town(v));
+    }
+
+    @Override
+    public boolean containsRoadConnection(String town1, String town2) {
+        return graph.containsEdge(new Town(town1), new Town(town2));
+    }
+
+    @Override
+    public ArrayList<String> allRoads() {
+        Set<Road> roads = graph.edgeSet();
+        ArrayList<String> roadNames = new ArrayList<>();
+        for (Road road : roads) {
+            roadNames.add(road.getName());
+        }
+        Collections.sort(roadNames);
+        return roadNames;
+    }
+
+    @Override
+    public boolean deleteRoadConnection(String town1, String town2, String road) {
+        Town t1 = new Town(town1);
+        Town t2 = new Town(town2);
+        Road roadToRemove = graph.getEdge(t1, t2);
+        if (roadToRemove != null && roadToRemove.getName().equals(road)) {
+            return graph.removeEdge(t1, t2, roadToRemove.getWeight(), road) != null;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteTown(String v) {
+        return graph.removeVertex(new Town(v));
+    }
+
+    @Override
+    public ArrayList<String> allTowns() {
+        Set<Town> towns = graph.vertexSet();
+        ArrayList<String> townNames = new ArrayList<>();
+        for (Town town : towns) {
+            townNames.add(town.getName());
+        }
+        Collections.sort(townNames);
+        return townNames;
+    }
+
+    @Override
+    public ArrayList<String> getPath(String town1, String town2) {
+        return graph.shortestPath(new Town(town1), new Town(town2));
+    }
+
+    public void populateTownGraph(File selectedFile) throws FileNotFoundException, IOException {
+        // Check if file exists
+        if (!selectedFile.exists()) {
+            throw new FileNotFoundException("File not found: " + selectedFile.getAbsolutePath());
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(selectedFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts.length == 3) {
+                    String[] roadInfo = parts[0].split(",");
+                    String roadName = roadInfo[0];
+                    int weight = Integer.parseInt(roadInfo[1]);
+                    String town1 = parts[1];
+                    String town2 = parts[2];
+
+                    // Add towns and road to the graph
+                    addTown(town1);
+                    addTown(town2);
+                    addRoad(town1, town2, weight, roadName);
+                }
+            }
+        }
+    }
+
+}
