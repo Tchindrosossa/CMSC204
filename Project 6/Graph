@@ -1,0 +1,226 @@
+package My_Project_6;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import java.io.*;
+import java.util.*;
+
+public class Graph implements GraphInterface<Town, Road> {
+    private Map<Town, List<Road>> adjacencyList;
+    private Map<Town, Town> predecessors;
+    private Map<Town, Integer> distance;
+
+    public Graph() {
+        adjacencyList = new HashMap<>();
+        predecessors = new HashMap<>();
+        distance = new HashMap<>();
+    }
+
+		@Override
+		public Road getEdge(Town sourceVertex, Town destinationVertex) {
+		    if (sourceVertex == null || destinationVertex == null || !adjacencyList.containsKey(sourceVertex)) {
+	            return null;
+	        }
+	        for (Road road : adjacencyList.get(sourceVertex)) {
+	            if (road.getTown1().equals(destinationVertex) || road.getTown2().equals(destinationVertex)) {
+	                return road;
+	            }
+	        }
+	        return null;
+	    }
+
+		@Override
+		public Road addEdge(Town sourceVertex, Town destinationVertex, int weight, String description) {
+			 if (sourceVertex == null || destinationVertex == null) {
+		            throw new NullPointerException("Source or destination vertex is null");
+		        }
+		        if (!adjacencyList.containsKey(sourceVertex) || !adjacencyList.containsKey(destinationVertex)) {
+		            throw new IllegalArgumentException("Source or destination vertex not found in graph");
+		        }
+		        Road newRoad = new Road(sourceVertex, destinationVertex, weight, description);
+		        adjacencyList.get(sourceVertex).add(newRoad);
+		        adjacencyList.get(destinationVertex).add(newRoad);
+		        return newRoad;
+		    }
+
+		@Override
+		public boolean addVertex(Town v) {
+			 if (v == null) {
+		            throw new NullPointerException("The specified vertex is null");
+		        }
+		        if (!adjacencyList.containsKey(v)) {
+		            adjacencyList.put(v, new ArrayList<>());
+		            return true;
+		        }
+		        return false;
+		    }
+
+		@Override
+		public boolean containsEdge(Town sourceVertex, Town destinationVertex) {
+			 Road edge = getEdge(sourceVertex, destinationVertex);
+		        return edge != null;
+		    }
+
+		    @Override
+		    public boolean containsVertex(Town v) {
+		        return adjacencyList.containsKey(v);
+		    }
+
+
+		@Override
+		public Set<Road> edgeSet() {
+		       Set<Road> edges = new HashSet<>();
+		        for (List<Road> roads : adjacencyList.values()) {
+		            edges.addAll(roads);
+		        }
+		        return edges;
+		    }
+
+		@Override
+		public Set<Road> edgesOf(Town vertex) {
+			if (vertex == null) {
+	            throw new NullPointerException("The specified vertex is null");
+	        }
+	        if (!adjacencyList.containsKey(vertex)) {
+	            throw new IllegalArgumentException("Vertex not found in the graph");
+	        }
+	        return new HashSet<>(adjacencyList.get(vertex));
+	    }
+
+		@Override
+		public Road removeEdge(Town sourceVertex, Town destinationVertex, int weight, String description) {
+	        Road road = getEdge(sourceVertex, destinationVertex);
+	        if (road != null && road.getWeight() == weight && road.getName().equals(description)) {
+	            adjacencyList.get(sourceVertex).remove(road);
+	            adjacencyList.get(destinationVertex).remove(road);
+	            return road;
+	        }
+	        return null;
+	    }
+
+		@Override
+		public boolean removeVertex(Town v) {
+			if (v == null) {
+	            return false;
+	        }
+	        if (adjacencyList.containsKey(v)) {
+	            adjacencyList.remove(v);
+	            for (List<Road> roads : adjacencyList.values()) {
+	                roads.removeIf(road -> road.getTown1().equals(v) || road.getTown2().equals(v));
+	            }
+	            return true;
+	        }
+	        return false;
+	    }
+
+		@Override
+		public Set<Town> vertexSet() {
+			  return new HashSet<>(adjacencyList.keySet());
+	    }
+
+	    @Override
+	    public ArrayList<String> shortestPath(Town sourceVertex, Town destinationVertex) {
+	        dijkstraShortestPath(sourceVertex);
+
+	        ArrayList<String> path = new ArrayList<>();
+	        Town step = destinationVertex;
+
+	        // Check if a path exists
+	        if (predecessors.get(step) == null) {
+	            return path;
+	        }
+
+	        LinkedList<Town> stack = new LinkedList<>();
+	        stack.push(step);
+	        while ((step = predecessors.get(step)) != null) {
+	            stack.push(step);
+	        }
+
+	        // Build path string
+	        Town start, end;
+	        while (!stack.isEmpty()) {
+	            start = stack.pop();
+	            if (!stack.isEmpty()) {
+	                end = stack.peek();
+	                Road connectingRoad = getEdge(start, end);
+	                path.add(start.getName() + " via " + connectingRoad.getName() + " to " + end.getName() + " " + connectingRoad.getWeight() + " mi");
+	            }
+	        }
+
+	        return path;
+	    }
+
+	    @Override
+	    public void dijkstraShortestPath(Town sourceVertex) {
+	        Set<Town> settledTowns = new HashSet<>();
+	        PriorityQueue<Town> unsettledTowns = new PriorityQueue<>(Comparator.comparing(town -> distance.get(town)));
+
+	        distance.clear();
+	        predecessors.clear();
+
+	        for (Town town : adjacencyList.keySet()) {
+	            distance.put(town, Integer.MAX_VALUE);
+	            predecessors.put(town, null);
+	        }
+
+	        distance.put(sourceVertex, 0);
+	        unsettledTowns.add(sourceVertex);
+
+	        while (!unsettledTowns.isEmpty()) {
+	            Town currentTown = unsettledTowns.poll();
+	            for (Road road : adjacencyList.get(currentTown)) {
+	                Town adjacentTown = road.getTown1().equals(currentTown) ? road.getTown2() : road.getTown1();
+	                if (!settledTowns.contains(adjacentTown)) {
+	                    int roadDistance = road.getWeight();
+	                    if (distance.get(currentTown) + roadDistance < distance.get(adjacentTown)) {
+	                        distance.put(adjacentTown, distance.get(currentTown) + roadDistance);
+	                        predecessors.put(adjacentTown, currentTown);
+	                        unsettledTowns.add(adjacentTown);
+	                    }
+	                }
+	            }
+	            settledTowns.add(currentTown);
+	        }
+	    }
+
+	    public void loadFromFile(File file) throws FileNotFoundException, IOException {
+	        if (!file.exists()) {
+	            throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
+	        }
+
+	        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+	            String line;
+	            while ((line = reader.readLine()) != null) {
+	                // Process each line to add vertices and edges to the graph
+	                // Example line format: Town1,Town2,Distance,RoadName
+	                String[] parts = line.split(",");
+	                if (parts.length == 4) {
+	                    Town town1 = new Town(parts[0]);
+	                    Town town2 = new Town(parts[1]);
+	                    int distance = Integer.parseInt(parts[2]);
+	                    String roadName = parts[3];
+
+	                    this.addVertex(town1);
+	                    this.addVertex(town2);
+	                    this.addEdge(town1, town2, distance, roadName);
+	                }
+	            }
+	        }
+	    }
+
+	    public void saveToFile(File file) throws IOException {
+	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+	            for (Road road : this.edgeSet()) {
+	                String line = road.getTown1().getName() + "," +
+	                              road.getTown2().getName() + "," +
+	                              road.getWeight() + "," +
+	                              road.getName();
+	                writer.write(line);
+	                writer.newLine();
+	            	}
+	        	}
+	    	}
+		}
+
