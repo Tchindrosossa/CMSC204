@@ -1,0 +1,87 @@
+package My_Project_6;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+import org.junit.*;
+import static org.junit.Assert.*;
+import java.util.Set;
+import java.util.ArrayList;
+
+public class Graph_STUDENT_Test {
+    private Graph graph;
+    private Town town1;
+    private Town town2;
+    private Town town3;
+
+    @Before
+    public void setUp() throws Exception {
+        graph = new Graph();
+        town1 = new Town("Town1");
+        town2 = new Town("Town2");
+        town3 = new Town("Town3");
+        graph.addVertex(town1);
+        graph.addVertex(town2);
+    }
+
+    @Test
+    public void testAddEdge() {
+        Road road = graph.addEdge(town1, town2, 1, "Road1");
+        assertNotNull(road);
+        assertTrue(graph.containsEdge(town1, town2));
+    }
+
+    @Test
+    public void testRemoveEdge() {
+        graph.addEdge(town1, town2, 1, "Road1");
+        Road removedRoad = graph.removeEdge(town1, town2, 1, "Road1");
+        assertNotNull(removedRoad);
+        assertFalse(graph.containsEdge(town1, town2));
+    }
+
+    @Test
+    public void testAddVertex() {
+        assertTrue(graph.addVertex(town3));
+        assertTrue(graph.containsVertex(town3));
+    }
+
+    @Test
+    public void testRemoveVertex() {
+        assertTrue(graph.removeVertex(town2));
+        assertFalse(graph.containsVertex(town2));
+    }
+
+    @Test
+    public void testEdgeSet() {
+        graph.addEdge(town1, town2, 1, "Road1");
+        Set<Road> roads = graph.edgeSet();
+        assertNotNull(roads);
+        assertFalse(roads.isEmpty());
+    }
+
+    @Test
+    public void testEdgesOf() {
+        graph.addEdge(town1, town2, 1, "Road1");
+        Set<Road> roads = graph.edgesOf(town1);
+        assertNotNull(roads);
+        assertFalse(roads.isEmpty());
+    }
+
+    @Test
+    public void testVertexSet() {
+        Set<Town> towns = graph.vertexSet();
+        assertNotNull(towns);
+        assertFalse(towns.isEmpty());
+    }
+
+    @Test
+    public void testShortestPath() {
+        graph.addVertex(town3);
+        graph.addEdge(town1, town2, 1, "Road1");
+        graph.addEdge(town2, town3, 1, "Road2");
+        ArrayList<String> path = graph.shortestPath(town1, town3);
+        assertNotNull(path);
+        assertFalse(path.isEmpty());
+    }
+}
