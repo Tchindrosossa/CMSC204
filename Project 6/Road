@@ -1,0 +1,79 @@
+package My_Project_6;
+
+/**
+ * @author Tchindro Sossa
+ */
+
+public class Road implements Comparable<Road> {
+    private Town town1;
+    private Town town2;
+    private int distance;
+    private String name;
+
+    public Road(Town town1, Town town2, int distance, String name) {
+        this.town1 = town1;
+        this.town2 = town2;
+        this.distance = distance;
+        this.name = name;
+    }
+
+    public Town getTown1() {
+        return town1;
+    }
+
+    public Town getTown2() {
+        return town2;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int compareTo(Road otherRoad) {
+        // Comparison based on road name
+        return this.name.compareTo(otherRoad.name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Road road = (Road) obj;
+        // Road equality is based on whether the two towns are the same, regardless of order
+        return (town1.equals(road.town1) && town2.equals(road.town2)) ||
+               (town1.equals(road.town2) && town2.equals(road.town1));
+    }
+
+    @Override
+    public int hashCode() {
+        // Hash code calculation considering the unordered pair of towns
+        return town1.hashCode() + town2.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Road{" +
+               "name='" + name + '\'' +
+               ", between " + town1.getName() +
+               " and " + town2.getName() +
+               ", distance=" + distance +
+               '}';
+    }
+
+	public int getWeight() {
+		return distance; // Return the distance as the weight of the road
+    }
+}
