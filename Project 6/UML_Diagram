@@ -1,1 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1.0">
+  <help_text/>
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>10</x>
+      <y>260</y>
+      <w>480</w>
+      <h>290</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Java Class&gt;&gt;
+Road
+--
+- town1: Town
+- town2: Town
+- distance: int
+- name: String
+--
++ Road(town1: Town, town2: Town, distance: int, name:String)
++ getTown1(): Town
++ getTown2(): Town
++ getDistance(): int
++ getName(): String
++ setDistance(distance: int): void
++ setName(name: String): void
++ compareTo(otherRoad: Road): int
++ equals(obj: Object): boolean
++ toString(): String
++ getWeight(): int
 
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>10</x>
+      <y>0</y>
+      <w>350</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Java Class&gt;&gt;
+Town
+--
+- name: String
+- adjacentTowns: List&lt;Town&gt;
+--
++ Town(name: String)
++ getName(): String
++ setName(name: String): void
++ getAdjacentTowns(): List&lt;Town&gt;
++ addAdjacentTown(town: Town): void
++ removeAdjacentTown(town: Town): boolean
++ compareTo(otherTown: Town): int
++ equals(obj: Object): boolean
++ toString(): String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>10</x>
+      <y>570</y>
+      <w>720</w>
+      <h>350</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Java Class&gt;&gt;
+Graph
+--
+- adjacencyList: Map&lt;Town, List&lt;Road&gt;&gt;
+- predecessors: Map&lt;Town, Town&gt;
+- distance: Map&lt;Town, Integer&gt;
+--
++ Graph()
++ getEdge(sourceVertex: Town, destinationVertex: Town): Road
++ addEdge(sourceVertex: Town, destinationVertex: Town, weight: int, description: String): Road
++ addVertex(v: Town): boolean
++ containsEdge(sourceVertex: Town, destinationVertex: Town): boolean
++ containsVertex(v: Town): boolean
++ edgeSet(): Set&lt;Road&gt;
++ edgesOf(vertex: Town): Set&lt;Road&gt;
++ removeEdge(sourceVertex: Town, destinationVertex: Town, weight: int, description: String): Road
++ removeVertex(v: Town): boolean
++ vertexSet(): Set&lt;Town&gt;
++ shortestPath(sourceVertex: Town, destinationVertex: Town): ArrayList&lt;String&gt;
++ dijkstraShortestPath(sourceVertex: Town): void
++ loadFromFile(file: File): void
++ saveToFile(file: File): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>950</y>
+      <w>580</w>
+      <h>290</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Java Class&gt;&gt;
+TownGraphManager
+--
+- graph: Graph
+--
++ TownGraphManager()
++ addRoad(town1: String, town2: String, weight: int, roadName: String): boolean
++ getRoad(town1: String, town2: String): String
++ addTown(v: String): boolean
++ getTown(name: String): Town
++ containsTown(v: String): boolean
++ containsRoadConnection(town1: String, town2: String): boolean
++ allRoads(): ArrayList&lt;String&gt;
++ deleteRoadConnection(town1: String, town2: String, road: String): boolean
++ deleteTown(v: String): boolean
++ allTowns(): ArrayList&lt;String&gt;
++ getPath(town1: String, town2: String): ArrayList&lt;String&gt;
++ populateTownGraph(file: File): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>750</x>
+      <y>60</y>
+      <w>210</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Java Class&gt;&gt;
+Comparable
+--
+
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>80</y>
+      <w>400</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+Implements</panel_attributes>
+    <additional_attributes>380.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>600</x>
+      <y>100</y>
+      <w>180</w>
+      <h>320</h>
+    </coordinates>
+    <panel_attributes>lt=.
+Implements</panel_attributes>
+    <additional_attributes>140.0;10.0;10.0;300.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>380</y>
+      <w>160</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+</panel_attributes>
+    <additional_attributes>140.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>690</y>
+      <w>160</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+Implements</panel_attributes>
+    <additional_attributes>140.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>870</x>
+      <y>560</y>
+      <w>610</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Java Interface&gt;&gt;
+GraphInterface&lt;Town, Road&gt;
+--
+
+--
++ E getEdge(V sourceVertex, V destinationVertex)
++ E addEdge(V sourceVertex, V destinationVertex, int weight, String description)
++ boolean addVertex(V v)
++ boolean containsEdge(V sourceVertex, V destinationVertex)
++ boolean containsVertex(V v)
++ Set&lt;E&gt; edgeSet()
++ Set&lt;E&gt; edgesOf(V vertex)
++ E removeEdge(V sourceVertex, V destinationVertex, int weight, String description)
++ boolean removeVertex(V v)
++ Set&lt;V&gt; vertexSet()
++ ArrayList&lt;String&gt; shortestPath(V sourceVertex, V destinationVertex)
++ void dijkstraShortestPath(V sourceVertex)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>580</x>
+      <y>1070</y>
+      <w>290</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+Implements</panel_attributes>
+    <additional_attributes>270.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>860</x>
+      <y>960</y>
+      <w>580</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Java Interface&gt;&gt;
+TownGraphManagerInterface
+--
+
+--
++ boolean addRoad(String town1, String town2, int weight, String roadName)
++ String getRoad(String town1, String town2)
++ boolean addTown(String v)
++ Town getTown(String name)
++ boolean containsTown(String v)
++ boolean containsRoadConnection(String town1, String town2)
++ ArrayList&lt;String&gt; allRoads()
++ boolean deleteRoadConnection(String town1, String town2, String road)
++ boolean deleteTown(String v)
++ ArrayList&lt;String&gt; allTowns()
++ ArrayList&lt;String&gt; getPath(String town1, String town2)</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
